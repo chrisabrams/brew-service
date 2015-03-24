@@ -24,14 +24,23 @@ class BrewService {
     this.server.use(bodyParser.json())
     this.server.use(cookieParser())
 
-    this.loadRoutes()
+    this.server.use( (req, res, next) => {
+
+      var url = req.protocol + '://' + req.get('host') + req.originalUrl
+
+      console.log('\n', req.method, url, '\n', req.body, '\n')
+
+      next()
+
+    })
+
   }
 
-  loadRoutes() {
+  loadRoutes(options = {}) {
 
     var routes = require(path.join(process.cwd(), this.routesPath))
 
-    routes(this.server)
+    routes(this.server, options)
 
   }
 
@@ -39,7 +48,9 @@ class BrewService {
     console.log.apply(console, arguments)
   }
 
-  start() {
+  start(options = {}) {
+
+    this.loadRoutes(options)
 
     this.server.listen(this.port)
     console.log("Service", this.serviceName, "is listening on", this.port)
