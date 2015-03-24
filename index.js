@@ -21,7 +21,8 @@ class BrewService {
 
     this.server  = express()
 
-    this.server.use(bodyParser.json())
+    this.server.use(bodyParser.urlencoded({extended: true}))
+    this.server.use(bodyParser.json({strict: false}))
     this.server.use(cookieParser())
 
     this.server.use( (req, res, next) => {
